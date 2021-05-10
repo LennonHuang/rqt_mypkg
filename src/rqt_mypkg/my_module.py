@@ -1,11 +1,13 @@
 import os
 import rospy
 import rospkg
+import rosbag
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
 from python_qt_binding.QtWidgets import QWidget
 from geometry_msgs.msg import Twist
+from std_msgs.msg import Int32, String
 
 class MyPlugin(Plugin):
 
@@ -44,12 +46,16 @@ class MyPlugin(Plugin):
         # Add widget to the user interface
         context.add_widget(self._widget)
 
+        self._bag = None
         #add publisher
         self._publisher = rospy.Publisher("cmd_vel",Twist,queue_size=10)
+        self._subscriber = None
 
         #adding connection of signal and slot here
         self._widget.btn.pressed.connect(self._test_slot)
         self._widget.btn_stop.pressed.connect(self._test_stop_slot)
+        self._widget.bag_btn.pressed.connect(self._test_rosbag)
+        self._widget.stop_record_btn.pressed.connect(self._test_stop_rosbag)
 
     def shutdown_plugin(self):
         # TODO unregister all publishers here
@@ -64,6 +70,8 @@ class MyPlugin(Plugin):
         # TODO restore intrinsic configuration, usually using:
         # v = instance_settings.value(k)
         pass
+
+    #Slots
     def _test_slot(self):
         self._widget.label.setText("Pressed")
         t = Twist()
@@ -77,6 +85,19 @@ class MyPlugin(Plugin):
         t.angular.z = 0
         self._publisher.publish(t)
         print("Stop!")
+    def _test_rosbag(self):
+        self._bag = rosbag.Bag('test.bag','w')
+        self._subscriber = rospy.Subscriber("cmd_vel",Twist,self._bag_callback)
+        self._widget.record_status_label.setText("Recording")
+        
+        print("rosbag recording")
+    def _test_stop_rosbag(self):
+        self._bag.close()
+        print("rosbag stop recording")
+        self._widget.record_status_label.setText("Stop recording")
+    def _bag_callback(self,data):
+        self._bag.write("whatever",data)
+
     #def trigger_configuration(self):
         # Comment in to signal that the plugin has a way to configure
         # This will enable a setting button (gear icon) in each dock widget title bar

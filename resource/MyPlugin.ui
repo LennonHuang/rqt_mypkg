@@ -13,57 +13,105 @@
   <property name="windowTitle">
    <string>WizzWidget</string>
   </property>
-  <widget class="QPushButton" name="btn">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>270</y>
-     <width>98</width>
-     <height>27</height>
+     <x>298</x>
+     <y>380</y>
+     <width>82</width>
+     <height>50</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Button</string>
-   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QPushButton" name="btn_stop">
+      <property name="text">
+       <string>Stop</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="stop_label">
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>340</y>
-     <width>67</width>
-     <height>17</height>
+     <x>210</x>
+     <y>380</y>
+     <width>82</width>
+     <height>50</height>
     </rect>
    </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QPushButton" name="btn">
+      <property name="text">
+       <string>Button</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
-  <widget class="QPushButton" name="btn_stop">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>480</x>
-     <y>270</y>
-     <width>98</width>
-     <height>27</height>
+     <x>170</x>
+     <y>90</y>
+     <width>172</width>
+     <height>52</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Stop</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="stop_label">
-   <property name="geometry">
-    <rect>
-     <x>500</x>
-     <y>340</y>
-     <width>67</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QPushButton" name="bag_btn">
+        <property name="text">
+         <string>record</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_record">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="QPushButton" name="stop_record_btn">
+        <property name="text">
+         <string>stop</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="record_status_label">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
