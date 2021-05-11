@@ -5,7 +5,7 @@ import rosbag
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
-from python_qt_binding.QtWidgets import QWidget
+from python_qt_binding.QtWidgets import QWidget, QFileDialog
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Int32, String
 
@@ -86,7 +86,11 @@ class MyPlugin(Plugin):
         self._publisher.publish(t)
         print("Stop!")
     def _test_rosbag(self):
-        self._bag = rosbag.Bag('test.bag','w')
+        filename = QFileDialog.getSaveFileName(self._widget,self._widget.tr('Select name for the bag'),"",self._widget.tr('Bag files {.bag} (*.bag)'))[0]
+        print(filename)
+        if not filename.endswith('.bag'):
+            filename += ".bag"
+        self._bag = rosbag.Bag(filename,'w')
         self._subscriber = rospy.Subscriber("cmd_vel",Twist,self._bag_callback)
         self._widget.record_status_label.setText("Recording")
         
