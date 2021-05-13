@@ -2,12 +2,17 @@ import os
 import rospy
 import rospkg
 import rosbag
+import serial
+
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
 from python_qt_binding.QtWidgets import QWidget, QFileDialog
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Int32, String
+from PyQt5 import QtSerialPort
+from PyQt5.QtSerialPort import QSerialPortInfo
+
 
 class MyPlugin(Plugin):
 
@@ -50,12 +55,16 @@ class MyPlugin(Plugin):
         #add publisher
         self._publisher = rospy.Publisher("cmd_vel",Twist,queue_size=10)
         self._subscriber = None
+        self._serial_ports = 0
+        self._ser = None
 
         #adding connection of signal and slot here
         self._widget.btn.pressed.connect(self._test_slot)
         self._widget.btn_stop.pressed.connect(self._test_stop_slot)
         self._widget.bag_btn.pressed.connect(self._test_rosbag)
         self._widget.stop_record_btn.pressed.connect(self._test_stop_rosbag)
+        self._widget.serial_scan_btn.pressed.connect(self._serial_scan_btn)
+        self._widget.gyro_start_btn.pressed.connect(self._slot_update_gyro)
 
     def shutdown_plugin(self):
         # TODO unregister all publishers here
@@ -101,6 +110,21 @@ class MyPlugin(Plugin):
         self._widget.record_status_label.setText("Stop recording")
     def _bag_callback(self,data):
         self._bag.write("whatever",data)
+    def _serial_scan_btn(self):
+        info_list = QSerialPortInfo()
+        serial_list = info_list.availablePorts()
+        self._serial_ports = [port.portName() for port in serial_list]
+        #print(self._serial_ports[0])
+        self._widget.comboBox.clear()
+        self._widget.comboBox.addItems(self._serial_ports)
+    def _slot_update_gyro(self):
+        self._ser = serial.Serial('/dev/ttyACM0',9600)
+        self._ser.write("Send\n")
+        gyro_data = self._ser.read_until('\n')
+        gyro_text = gyro_data.split(";")
+        self._widget.x_label.setText(gyro_text[0])
+        self._widget.y_label.setText(gyro_text[1])
+        self._widget.z_label.setText(gyro_text[2])
 
     #def trigger_configuration(self):
         # Comment in to signal that the plugin has a way to configure

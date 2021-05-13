@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>644</width>
-    <height>203</height>
+    <width>752</width>
+    <height>369</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -19,12 +19,12 @@
   <property name="windowTitle">
    <string>WizzWidget</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>170</x>
      <y>90</y>
-     <width>461</width>
+     <width>531</width>
      <height>71</height>
     </rect>
    </property>
@@ -134,6 +134,68 @@
        </size>
       </property>
      </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>40</y>
+     <width>183</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <item>
+     <widget class="QPushButton" name="serial_scan_btn">
+      <property name="text">
+       <string>Scan</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QComboBox" name="comboBox"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>30</y>
+     <width>121</width>
+     <height>251</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_5">
+    <item>
+     <widget class="QPushButton" name="gyro_start_btn">
+      <property name="text">
+       <string>Start Gyro</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="x_label">
+      <property name="text">
+       <string>X: </string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="y_label">
+      <property name="text">
+       <string>Y: </string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="z_label">
+      <property name="text">
+       <string>Z: </string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
