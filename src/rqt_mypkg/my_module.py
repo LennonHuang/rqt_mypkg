@@ -3,16 +3,19 @@ import rospy
 import rospkg
 import rosbag
 import serial
+import rviz
 
-
+from serial import SerialException
 from qt_gui.plugin import Plugin
-from python_qt_binding import loadUi
-from python_qt_binding.QtWidgets import QWidget, QFileDialog
+#from python_qt_binding import loadUi
+#from python_qt_binding.QtWidgets import QWidget, QFileDialog
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Int32, String
-from PyQt5 import QtSerialPort
+from PyQt5.QtWidgets import QWidget, QFileDialog
+from PyQt5 import uic, QtSerialPort
+from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from PyQt5.QtSerialPort import QSerialPortInfo
-
+from nano_worker import nano_worker
 
 class MyPlugin(Plugin):
 
@@ -38,16 +41,17 @@ class MyPlugin(Plugin):
         # Get path to UI file which should be in the "resource" folder of this package
         ui_file = os.path.join(rospkg.RosPack().get_path('rqt_mypkg'), 'resource', 'MyPlugin.ui')
         # Extend the widget with all attributes and children from UI file
-        loadUi(ui_file, self._widget)
+        uic.loadUi(ui_file, self._widget)
+        #loadUi(ui_file, self._widget)
         # Give QObjects reasonable names
-        self._widget.setObjectName('MyPluginUi')
+        #self._widget.setObjectName('MyPluginUi')
         # Show _widget.windowTitle on left-top of each plugin (when 
         # it's set in _widget). This is useful when you open multiple 
         # plugins at once. Also if you open multiple instances of your 
         # plugin at once, these lines add number to make it easy to 
         # tell from pane to pane.
-        if context.serial_number() >= 0:
-            self._widget.setWindowTitle("Aqua" + self._widget.windowTitle() + (' (%d)' % context.serial_number()))
+        #if context.serial_number() >= 0:
+            #self._widget.setWindowTitle("Aqua" + self._widget.windowTitle() + (' (%d)' % context.serial_number()))
         # Add widget to the user interface
         context.add_widget(self._widget)
 
@@ -56,15 +60,22 @@ class MyPlugin(Plugin):
         self._publisher = rospy.Publisher("cmd_vel",Twist,queue_size=10)
         self._subscriber = None
         self._serial_ports = 0
-        self._ser = None
+        self._nanoWorker = None
+        self._nanoThread = None
+        self._widget.led_btn.setEnabled(False)
+        
 
         #adding connection of signal and slot here
-        self._widget.btn.pressed.connect(self._test_slot)
-        self._widget.btn_stop.pressed.connect(self._test_stop_slot)
-        self._widget.bag_btn.pressed.connect(self._test_rosbag)
-        self._widget.stop_record_btn.pressed.connect(self._test_stop_rosbag)
-        self._widget.serial_scan_btn.pressed.connect(self._serial_scan_btn)
-        self._widget.gyro_start_btn.pressed.connect(self._slot_update_gyro)
+        self._widget.btn.clicked.connect(self._test_slot)
+        self._widget.btn_stop.clicked.connect(self._test_stop_slot)
+        self._widget.bag_btn.clicked.connect(self._test_rosbag)
+        self._widget.stop_record_btn.clicked.connect(self._test_stop_rosbag)
+        self._widget.serial_scan_btn.clicked.connect(self._serial_scan_btn)
+        self._widget.imu_start_btn.clicked.connect(self._slot_update_imu)
+        self._widget.imu_stop_btn.clicked.connect(self._slot_imu_stop)
+        self._widget.imu_refresh_btn.clicked.connect(self._slot_imu_refresh)
+        self._widget.led_btn.clicked.connect(self._slot_led_update)
+        
 
     def shutdown_plugin(self):
         # TODO unregister all publishers here
@@ -117,15 +128,67 @@ class MyPlugin(Plugin):
         #print(self._serial_ports[0])
         self._widget.comboBox.clear()
         self._widget.comboBox.addItems(self._serial_ports)
-    def _slot_update_gyro(self):
-        self._ser = serial.Serial('/dev/ttyACM0',9600)
-        self._ser.write("Send\n")
-        gyro_data = self._ser.read_until('\n')
-        gyro_text = gyro_data.split(";")
-        self._widget.x_label.setText(gyro_text[0])
-        self._widget.y_label.setText(gyro_text[1])
-        self._widget.z_label.setText(gyro_text[2])
+    def _slot_update_imu(self):
+        #initialize the thread and the worker, and move the worker to the thread.
+        self._nanoThread = QThread()
+        self._nanoWorker = nano_worker()
+        self._nanoWorker.moveToThread(self._nanoThread)
+        #Connect the thread start() and worker customized run()
+        self._nanoThread.started.connect(self._nanoWorker.run)
+        self._nanoWorker.finished.connect(self._nanoThread.exit)
+        self._nanoWorker.progress.connect(lambda imu_data: self.imu_reportProgress(imu_data))
+        self._nanoWorker.gyro_not_connected.connect(self._slot_imu_notFound)
+        
 
+        if(not self._nanoWorker.is_connected):
+            print("Disable the button")
+            self._nanoWorker.gyro_not_connected.emit()
+            self._nanoWorker.finished.emit()
+            self._widget.led_btn.setEnabled(False)
+        else:
+            self._nanoThread.start()
+            self._widget.imu_status_label.setText("IMU Started")
+            self._widget.imu_stop_btn.setEnabled(True)
+            self._widget.imu_refresh_btn.setEnabled(False)
+            self._widget.led_btn.setEnabled(True)
+        
+    def imu_reportProgress(self, imu_data):
+        imu_text = imu_data.split(";")
+        self._widget.x_label.setText("X: " + imu_text[0] + " deg/s")
+        self._widget.y_label.setText("Y: " + imu_text[1] + " deg/s")
+        self._widget.z_label.setText("Z: " + imu_text[2] + " deg/s")
+        self._widget.x_label_acc.setText("X: " + imu_text[3] + " g")
+        self._widget.y_label_acc.setText("Y: " + imu_text[4] + " g")
+        self._widget.z_label_acc.setText("Z: " + imu_text[5].rstrip("\n") + " g")
+
+    def _slot_imu_stop(self):
+        self._nanoWorker.processing = False
+        self._nanoWorker.finished.emit()
+        if (self._widget.imu_start_btn.isEnabled()):
+            self._widget.imu_status_label.setText("IMU Stopped")
+        
+        print("Stop the gyro Worker")
+        self._widget.imu_refresh_btn.setEnabled(True)
+        self._widget.led_btn.setEnabled(False)
+
+    def _slot_imu_notFound(self):
+        self._widget.imu_start_btn.setEnabled(False)
+        self._widget.imu_stop_btn.setEnabled(True)
+        self._widget.imu_status_label.setText("IMU Not Found")
+
+    def _slot_imu_refresh(self):
+        self._widget.imu_start_btn.setEnabled(True)
+        self._widget.imu_stop_btn.setEnabled(False)
+        self._widget.imu_status_label.setText("Refreshed")
+
+    def _slot_led_update(self):
+        if(not self._nanoWorker.is_led_on):
+            self._nanoWorker.is_led_on = True
+            self._widget.led_btn.setText("LED OFF")
+
+        else:
+            self._nanoWorker.is_led_on = False
+            self._widget.led_btn.setText("LED ON")
     #def trigger_configuration(self):
         # Comment in to signal that the plugin has a way to configure
         # This will enable a setting button (gear icon) in each dock widget title bar

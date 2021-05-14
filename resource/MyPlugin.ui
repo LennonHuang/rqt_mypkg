@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>752</width>
-    <height>369</height>
+    <width>998</width>
+    <height>533</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -22,15 +22,162 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>90</y>
-     <width>531</width>
-     <height>71</height>
+     <x>190</x>
+     <y>100</y>
+     <width>381</width>
+     <height>251</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_5">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QPushButton" name="imu_start_btn">
+        <property name="text">
+         <string>Start IMU</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="imu_stop_btn">
+        <property name="text">
+         <string>Stop IMU</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QPushButton" name="imu_refresh_btn">
+      <property name="text">
+       <string>refresh IMU</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_10">
+      <item>
+       <widget class="QLabel" name="imu_status_label">
+        <property name="text">
+         <string>IMU Status:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <item>
+           <widget class="QLabel" name="gyro_label">
+            <property name="text">
+             <string>Gyro:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="x_label">
+            <property name="text">
+             <string>X: </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="y_label">
+            <property name="text">
+             <string>Y: </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="z_label">
+            <property name="text">
+             <string>Z: </string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <widget class="QLabel" name="acc_label">
+            <property name="text">
+             <string>Accelermeter:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="x_label_acc">
+            <property name="text">
+             <string>X: </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="y_label_acc">
+            <property name="text">
+             <string>Y: </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="z_label_acc">
+            <property name="text">
+             <string>Z: </string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QPushButton" name="led_btn">
+      <property name="styleSheet">
+       <string notr="true">background-color: yellow;</string>
+      </property>
+      <property name="text">
+       <string>LED ON</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QPushButton" name="serial_scan_btn">
+        <property name="text">
+         <string>Scan Port</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBox"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>457</width>
+     <height>79</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QVBoxLayout" name="verticalLayout_6">
+      <item>
+       <widget class="QLabel" name="label_record_2">
+        <property name="text">
+         <string>Record Tool</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
@@ -71,52 +218,67 @@
         </item>
        </layout>
       </item>
+     </layout>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_7">
       <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+       <widget class="QLabel" name="label_send_message">
+        <property name="text">
+         <string>Example Publish Message</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QPushButton" name="btn">
-          <property name="text">
-           <string>Button</string>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QPushButton" name="btn">
+            <property name="text">
+             <string>Message1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QPushButton" name="btn_stop">
-          <property name="text">
-           <string>Stop</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="stop_label">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QPushButton" name="btn_stop">
+            <property name="text">
+             <string>Message2</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="stop_label">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
@@ -134,68 +296,6 @@
        </size>
       </property>
      </spacer>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>40</y>
-     <width>183</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_4">
-    <item>
-     <widget class="QPushButton" name="serial_scan_btn">
-      <property name="text">
-       <string>Scan</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QComboBox" name="comboBox"/>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>30</y>
-     <width>121</width>
-     <height>251</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_5">
-    <item>
-     <widget class="QPushButton" name="gyro_start_btn">
-      <property name="text">
-       <string>Start Gyro</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="x_label">
-      <property name="text">
-       <string>X: </string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="y_label">
-      <property name="text">
-       <string>Y: </string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="z_label">
-      <property name="text">
-       <string>Z: </string>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>
